@@ -1,4 +1,4 @@
-#  Octopay Rest API
+#  Rest API Example
 
 ## Requirements
 
@@ -23,11 +23,11 @@ For production build make sure you set active profile for MySQL 8 datasource to 
 mvn spring-boot:run -Dspring.profiles.active=prod
 ```
 
-##Rest API
+## Rest API
 
 There is implemented a demo core banking system supporting concurrent debit and credit operations on a bank account that always yield correct balance. The API is also documented in [OpenAPI 3.0](http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/).
 
-###Endpoints
+### Endpoints
 
 - GET: [/accounts](http://localhost:8080/accounts): Get all accounts. (For testing purposes)
 - GET: [/accounts/{id}](http://localhost:8080/accounts/id): Find account by id
