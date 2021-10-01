@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
 
     @Version
     private Long version;

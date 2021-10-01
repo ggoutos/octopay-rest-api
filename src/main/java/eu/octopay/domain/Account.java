@@ -1,18 +1,16 @@
 package eu.octopay.domain;
 
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -24,8 +22,13 @@ public class Account extends BaseEntity implements Serializable {
 
     @Id
     private String id = UUID.randomUUID().toString();
-    @Column
-    private BigDecimal balance = BigDecimal.ZERO;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.REMOVE, targetEntity = Operation.class, fetch = FetchType.LAZY)
+    private Set<Operation> operations;
 
     @Override
     public boolean equals(Object o) {
@@ -37,6 +40,6 @@ public class Account extends BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return 0;
+        return Objects.hash(getId());
     }
 }
