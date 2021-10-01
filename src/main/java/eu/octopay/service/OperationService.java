@@ -48,7 +48,16 @@ public class OperationService {
 
         if (request.getType().equals(OperationType.DEBIT)) {
             BigDecimal balance = accountService.getBalance(request.getAccountId());
+
+            log.info("\n\nAttempting Operation\n" +
+                    "account id:" + request.getAccountId() +", balance: " + balance +
+                    ", operation: " + request.getType().toString() + ", amount: " + request.getAmount() + "\n");
+
             if (balance.compareTo(request.getAmount()) < 0) {
+                log.error("\n\nOperation Failed\n" +
+                        "account id:" + request.getAccountId() +", balance: " + balance +
+                        ", operation: " + request.getType().toString() + ", amount: " + request.getAmount()+ "\n");
+
                 throw new DebitAmountException();
             }
         }
