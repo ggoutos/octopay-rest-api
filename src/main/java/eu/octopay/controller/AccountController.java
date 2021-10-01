@@ -105,7 +105,7 @@ public class AccountController {
         request.setAccountId(id);
         request.setType(OperationType.CREDIT);
 
-        eu.octopay.domain.Operation operation = operationService.save(request);
+        eu.octopay.domain.Operation operation = operationService.saveCreditDebit(request);
 
         return ResponseEntity.ok(EntityModel.of(operation,
                 linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),
@@ -121,7 +121,7 @@ public class AccountController {
         request.setAccountId(id);
         request.setType(OperationType.DEBIT);
 
-        eu.octopay.domain.Operation operation = operationService.save(request);
+        eu.octopay.domain.Operation operation = operationService.saveCreditDebit(request);
 
         return ResponseEntity.ok(EntityModel.of(operation,
                 linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),

@@ -38,4 +38,8 @@ public class AccountService {
                         : operation.getAmount().multiply(BigDecimal.valueOf(-1L)))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
 }

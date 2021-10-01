@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Set;
+import java.util.ArrayList;
 
 
 @Slf4j
@@ -29,7 +29,7 @@ public class OperationService {
     private final AccountService accountService;
     private final OperationRepository operationRepository;
 
-    public Set<Operation> findOperationsBetween(String accountId, LocalDate dateFrom, LocalDate dateTo) {
+    public ArrayList<Operation> findOperationsBetween(String accountId, LocalDate dateFrom, LocalDate dateTo) {
         LocalDateTime dateTimeFrom = (dateFrom != null)
                 ? dateFrom.atTime(LocalTime.MIN)
                 : LocalDateTime.parse("1970-01-01T00:00:01.000000");
@@ -43,7 +43,7 @@ public class OperationService {
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRES_NEW)
-    public Operation save(OperationRequest request) {
+    public Operation saveCreditDebit(OperationRequest request) {
         Account account = accountService.findById(request.getAccountId()).orElseThrow(EntityNotFoundException::new);
 
         if (request.getType().equals(OperationType.DEBIT)) {
