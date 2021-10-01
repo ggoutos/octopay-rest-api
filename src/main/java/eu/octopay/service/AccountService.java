@@ -7,6 +7,8 @@ import eu.octopay.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,6 +41,7 @@ public class AccountService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Account save(Account account) {
         return accountRepository.save(account);
     }

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -39,8 +38,8 @@ public class OperationTest {
     private AccountService accountService;
 
     @Test
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    void shouldIncrementItemAmount_withOptimisticLockingHandling() throws InterruptedException {
+    @Transactional
+    void concurrentOperations() throws InterruptedException {
         // given
         final Account account = accountService.save(new Account());
         log.info("account id:" + account.getId());
