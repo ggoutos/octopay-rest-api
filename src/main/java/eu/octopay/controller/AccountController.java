@@ -71,7 +71,7 @@ public class AccountController {
                     .map(EntityModel::of)
                     .collect(Collectors.toList());
         } else {
-            operations = operationService.findOperationsBetween(id, dateFrom, dateTo).stream()
+            operations = accountService.findOperationsBetween(id, dateFrom, dateTo).stream()
                     .map(EntityModel::of)
                     .collect(Collectors.toList());
         }
@@ -88,7 +88,7 @@ public class AccountController {
     @Operation(summary = "Find account balance", description = "Find account balance")
     public ResponseEntity<EntityModel<BalanceResponse>> balance(@PathVariable String id) {
 
-        BigDecimal balance =  accountService.getBalance(id);
+        BigDecimal balance = accountService.getBalance(id);
         BalanceResponse response = new BalanceResponse(id, balance);
 
         return ResponseEntity.ok(EntityModel.of(response,
@@ -105,7 +105,7 @@ public class AccountController {
         request.setAccountId(id);
         request.setType(OperationType.CREDIT);
 
-        eu.octopay.domain.Operation operation = operationService.saveCreditDebit(request);
+        eu.octopay.domain.Operation operation = operationService.operationExecute(request);
 
         return ResponseEntity.ok(EntityModel.of(operation,
                 linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),
@@ -121,7 +121,7 @@ public class AccountController {
         request.setAccountId(id);
         request.setType(OperationType.DEBIT);
 
-        eu.octopay.domain.Operation operation = operationService.saveCreditDebit(request);
+        eu.octopay.domain.Operation operation = operationService.operationExecute(request);
 
         return ResponseEntity.ok(EntityModel.of(operation,
                 linkTo(methodOn(AccountController.class).one(id)).withSelfRel(),

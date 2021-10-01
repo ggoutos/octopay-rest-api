@@ -2,9 +2,9 @@ package eu.octopay.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Version;
 
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
 
 @Setter
@@ -13,5 +13,5 @@ import java.io.Serializable;
 public abstract class BaseEntity implements Serializable {
 
     @Version
-    private Long version;
+    private Long version = 0L;
 }

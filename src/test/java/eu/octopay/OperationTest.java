@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,14 +30,14 @@ public class OperationTest {
 
     @SpyBean
     @Autowired
-    private OperationService operationService;
+    private AccountService accountService;
 
     @SpyBean
     @Autowired
-    private AccountService accountService;
+    private OperationService operationService;
 
     @Test
-    @Transactional
+//    @Transactional(readOnly = true)
     void concurrentOperations() throws InterruptedException {
         // given
         final Account account = accountService.save(new Account());
@@ -52,7 +51,7 @@ public class OperationTest {
                 "καταθεση test");
 
         // katathesi
-        operationService.saveCreditDebit(credit);
+        operationService.operationExecute(credit);
 
         assertEquals(0, accountService.getBalance(account.getId()).compareTo(BigDecimal.valueOf(1000)));
 
@@ -83,7 +82,7 @@ public class OperationTest {
         for (final OperationRequest request : operations) {
             executor.execute(() -> {
                 try {
-                    operationService.saveCreditDebit(request);
+                    operationService.operationExecute(request);
                 } catch (Exception e) {
                     log.info(request.getType().toString() + " " + request.getAmount());
                     log.info(e.getMessage());
@@ -95,7 +94,7 @@ public class OperationTest {
         assertTrue(executor.awaitTermination(1, TimeUnit.MINUTES));
 
         // then
-        final ArrayList<Operation> operationsSaved = operationService.findOperationsBetween(account.getId(), null, null);
+        final ArrayList<Operation> operationsSaved = accountService.findOperationsBetween(account.getId(), null, null);
 
         assertAll(
                 () -> assertEquals(2, operationsSaved.size()),
@@ -103,7 +102,7 @@ public class OperationTest {
                 () -> assertEquals(0, operationsSaved.get(0).getAmount().compareTo(BigDecimal.valueOf(1000))),
                 () -> assertEquals(0, operationsSaved.get(1).getAmount().compareTo(BigDecimal.valueOf(1000))),
                 () -> assertEquals(0, accountService.getBalance(account.getId()).compareTo(BigDecimal.ZERO)),
-                () -> verify(operationService, times(3)).saveCreditDebit(any())
+                () -> verify(operationService, times(3)).operationExecute(any())
         );
     }
 
